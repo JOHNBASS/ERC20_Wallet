@@ -53,8 +53,9 @@ const ethers = require('ethers');
         nonce: connection.getTransactionCount(sendWallet.address, 'latest')
     };
 
-    //const transaction = await signer.sendTransaction(tx);
-    //console.log("transaction", transaction);
+    //send eth
+    // const transaction = await signer.sendTransaction(tx);
+    // console.log("transaction", transaction);
 
     //send token
     let contractAddress = "0x01BE23585060835E02B77ef475b0Cc51aA1e0709"; //LINK Token
@@ -80,16 +81,21 @@ const ethers = require('ethers');
     //     console.log("sent token");
     // })
 
-    //transferFrom及approve兩個函式為一個組合
+    //transferFrom及approve兩個函式為一個組合 notyet
     await contract.approve(recipientAddress, tokenAmount).then((transferResult) => {
         console.dir(transferResult);
     })
-    let overrides = {
-        gasLimit: 750000
-    };
-    await contract.transferFrom(sendWallet.address, recipientAddress, tokenAmount, overrides).then((transferResult) => {
+    let data = {
+        gasLimit: ethers.utils.hexlify(100000000),// 100000gwi
+    }
+    await contract.transferFrom(sendWallet.address, recipientAddress, tokenAmount, data).then((transferResult) => {
         console.dir(transferResult);
         console.log("sent token");
     })
+
+    //讀取 Token
+    let balance = await contract.balanceOf(sendWallet.address)
+    const balanceInEth = ethers.utils.formatEther(balance)
+    console.log("LINK Token balance:", balanceInEth)
 
 })();
