@@ -68,16 +68,28 @@ const ethers = require('ethers');
         signer
     );
 
-    let send_token_amount = "1";
-    let token_decimal = await contract.decimals();
-    console.log("token_decimal:", token_decimal);
-    let token_amount = await ethers.utils.parseUnits(send_token_amount, token_decimal);
-    console.log("token_amount:", token_amount);
+    let sendTokenAmount = "1";
+    let tokenDecimal = await contract.decimals();
+    console.log("token_decimal:", tokenDecimal);
+    let tokenAmount = await ethers.utils.parseUnits(sendTokenAmount, tokenDecimal);
+    console.log("token_amount:", tokenAmount);
 
-    // Send tokens
-    // contract.transfer(recipientAddress, token_amount).then((transferResult) => {
+    // Send tokens transfer時合約不會收到通知，即合約沒辦法知道代幣轉到它身上
+    // await contract.transfer(recipientAddress, tokenAmount).then((transferResult) => {
     //     console.dir(transferResult);
     //     console.log("sent token");
     // })
+
+    //transferFrom及approve兩個函式為一個組合
+    await contract.approve(recipientAddress, tokenAmount).then((transferResult) => {
+        console.dir(transferResult);
+    })
+    let overrides = {
+        gasLimit: 750000
+    };
+    await contract.transferFrom(sendWallet.address, recipientAddress, tokenAmount, overrides).then((transferResult) => {
+        console.dir(transferResult);
+        console.log("sent token");
+    })
 
 })();
