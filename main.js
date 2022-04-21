@@ -76,22 +76,22 @@ const ethers = require('ethers');
     console.log("token_amount:", tokenAmount);
 
     // Send tokens transfer時合約不會收到通知，即合約沒辦法知道代幣轉到它身上
-    // await contract.transfer(recipientAddress, tokenAmount).then((transferResult) => {
-    //     console.dir(transferResult);
-    //     console.log("sent token");
-    // })
-
-    //transferFrom及approve兩個函式為一個組合 notyet
-    await contract.approve(recipientAddress, tokenAmount).then((transferResult) => {
-        console.dir(transferResult);
-    })
-    let data = {
-        gasLimit: ethers.utils.hexlify(100000000),// 100000gwi
-    }
-    await contract.transferFrom(sendWallet.address, recipientAddress, tokenAmount, data).then((transferResult) => {
+    await contract.transfer(recipientAddress, tokenAmount).then((transferResult) => {
         console.dir(transferResult);
         console.log("sent token");
     })
+
+    //transferFrom及approve兩個函式為一個組合 notyet
+    // await contract.approve(recipientAddress, tokenAmount).then((transferResult) => {
+    //     console.dir(transferResult);
+    // })
+    // let data = {
+    //     gasLimit: ethers.utils.hexlify(100000000),// 100000gwi
+    // }
+    // await contract.transferFrom(sendWallet.address, recipientAddress, tokenAmount, data).then((transferResult) => {
+    //     console.dir(transferResult);
+    //     console.log("sent token");
+    // })
 
     //讀取 Token
     let balance = await contract.balanceOf(sendWallet.address)
